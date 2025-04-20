@@ -9,8 +9,8 @@ inline __device__ float3 operator+(float3 a, float3 b) {
 }
 
 inline __device__ void operator+=(float3 &a, float3 b) {
-    a.x += b.x; 
-	a.y += b.y; 
+    a.x += b.x;
+	a.y += b.y;
 	a.z += b.z;
 }
 
@@ -23,8 +23,8 @@ inline __device__ float3 operator-(float3 a) {
 }
 
 inline __device__ void operator-=(float3 &a, float3 b) {
-    a.x -= b.x; 
-	a.y -= b.y; 
+    a.x -= b.x;
+	a.y -= b.y;
 	a.z -= b.z;
 }
 
@@ -37,19 +37,19 @@ inline __device__ float3 operator*(float3 a, float s) {
 }
 
 inline __device__ void operator*=(float3 &a, float s) {
-    a.x *= s; 
-	a.y *= s; 
+    a.x *= s;
+	a.y *= s;
 	a.z *= s;
 }
 
 // dot product
-inline __device__ float dot(float3 a, float3 b) { 
+inline __device__ float dot(float3 a, float3 b) {
 	return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
 // cross product
-inline __device__ float3 cross(float3 a, float3 b) { 
-	return make_float3( a.y*b.z - a.z*b.y,  a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x); 
+inline __device__ float3 cross(float3 a, float3 b) {
+	return make_float3( a.y*b.z - a.z*b.y,  a.z*b.x - a.x*b.z, a.x*b.y - a.y*b.x);
 }
 
 // lenght of the 3-components vector
@@ -79,6 +79,12 @@ inline __device__ float pow3(float x){
 inline __device__ float pow4(float x){
 	float s = x*x;
 	return s*s;
+}
+
+// pow(x, 5)
+inline __device__ float pow5(float x){
+	float s = x*x;
+	return s*s*x;
 }
 
 #define is0(m) ( dot(m, m) == 0.0f )

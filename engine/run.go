@@ -95,6 +95,9 @@ const (
 	ATOHEUN   = 150
 	ATOHEUN2T = 151
 	ATORK23   = 152
+
+	ANTIFERRONCRK4  = 300
+	ANTIFERRONCRK23 = 301
 )
 
 func SetSolver(typ int) {
@@ -203,6 +206,15 @@ func SetSolver(typ int) {
 	case ATORK23:
 		stepper = new(AtoRK23)
 		Ato = true
+
+		// Antiferro solvers
+
+	case ANTIFERRONCRK4:
+		stepper = new(AntiferroNCRK4)
+		AFf = true
+	case ANTIFERRONCRK23:
+		stepper = new(AntiferroNCRK23)
+		AFf = true
 	}
 	solvertype = typ
 }
