@@ -9,17 +9,21 @@ import (
 
 // Anisotropy variables
 var (
-	Ku1        = NewScalarParam("Ku1", "J/m3", "1st order uniaxial anisotropy constant")
-	Ku2        = NewScalarParam("Ku2", "J/m3", "2nd order uniaxial anisotropy constant")
-	Kc1        = NewScalarParam("Kc1", "J/m3", "1st order cubic anisotropy constant")
-	Kc2        = NewScalarParam("Kc2", "J/m3", "2nd order cubic anisotropy constant")
-	Kc3        = NewScalarParam("Kc3", "J/m3", "3rd order cubic anisotropy constant")
-	AnisU      = NewVectorParam("anisU", "", "Uniaxial anisotropy direction")
-	AnisC1     = NewVectorParam("anisC1", "", "Cubic anisotropy direction #1")
-	AnisC2     = NewVectorParam("anisC2", "", "Cubic anisotorpy directon #2")
-	B_anis     = NewVectorField("B_anis", "T", "Anisotropy field", AddAnisotropyField)
-	Edens_anis = NewScalarField("Edens_anis", "J/m3", "Anisotropy energy density", AddAnisotropyEnergyDensity)
-	E_anis     = NewScalarValue("E_anis", "J", "total anisotropy energy", GetAnisotropyEnergy)
+	Ku1         = NewScalarParam("Ku1", "J/m3", "1st order uniaxial anisotropy constant")
+	Ku2         = NewScalarParam("Ku2", "J/m3", "2nd order uniaxial anisotropy constant")
+	Ku2b        = NewScalarParam("Ku2b", "J/m3", "2nd order uniaxial anisotropy constant")
+	Ku3         = NewScalarParam("Ku3", "J/m3", "3nd order uniaxial anisotropy constant")
+	Ku3b        = NewScalarParam("Ku3b", "J/m3", "3nd order uniaxial anisotropy constant")
+	Kc1         = NewScalarParam("Kc1", "J/m3", "1st order cubic anisotropy constant")
+	Kc2         = NewScalarParam("Kc2", "J/m3", "2nd order cubic anisotropy constant")
+	Kc3         = NewScalarParam("Kc3", "J/m3", "3rd order cubic anisotropy constant")
+	AnisU       = NewVectorParam("anisU", "", "Uniaxial anisotropy direction z")
+	AnisUb      = NewVectorParam("anisUb", "", "Uniaxial anisotropy direction x")
+	AnisC1      = NewVectorParam("anisC1", "", "Cubic anisotropy direction #1")
+	AnisC2      = NewVectorParam("anisC2", "", "Cubic anisotorpy directon #2")
+	B_anis      = NewVectorField("B_anis", "T", "Anisotropy field", AddAnisotropyField)
+	Edens_anis  = NewScalarField("Edens_anis", "J/m3", "Anisotropy energy density", AddAnisotropyEnergyDensity)
+	E_anis      = NewScalarValue("E_anis", "J", "total anisotropy energy", GetAnisotropyEnergy)
 )
 
 var (
@@ -65,6 +69,41 @@ func addCubicAnisotropyFrom(dst *data.Slice, M magnetization, Msat, Kc1, Kc2, Kc
 		c2 := AnisC2.MSlice()
 		defer c2.Recycle()
 		cuda.AddCubicAnisotropy2(dst, M.Buffer(), ms, kc1, kc2, kc3, c1, c2)
+	}
+}
+
+func addTetragonalAnisotropyFrom(dst *data.Slice, M magnetization, Msat, Ku2b *RegionwiseScalar, AnisU, AnisUb *RegionwiseVector) {
+	if Ku2b.nonZero() {
+		ms := Msat.MSlice()
+		defer ms.Recycle()
+		ku2b := Ku2b.MSlice()
+		defer ku2b.Recycle()
+		t1 := AnisU.MSlice()
+		defer t1.Recycle()
+		t2 := AnisUb.MSlice()
+		defer t2.Recycle()
+
+		cuda.AddTetragonalAnisotropy(dst, M.Buffer(), ms, ku2b, t1, t2)
+	}
+}
+
+func addHexagonalAnisotropyFrom(dst *data.Slice, M magnetization, Msat, Ku3, Ku3b *RegionwiseScalar, AnisU, AnisUb *RegionwiseVector) {
+	if Ku3.nonZero() || Ku3b.nonZero() {
+		ms := Msat.MSlice()
+		defer ms.Recycle()
+
+		ku3 := Ku3.MSlice()
+		defer ku3.Recycle()
+
+		ku3b := Ku3b.MSlice()
+		defer ku3b.Recycle()
+
+		h1 := AnisU.MSlice()
+		defer h1.Recycle()
+
+		h2 := AnisUb.MSlice()
+		defer h2.Recycle()
+		cuda.AddHexagonalAnisotropy(dst, M.Buffer(), ms, ku3, ku3b, h1, h2)
 	}
 }
 

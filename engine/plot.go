@@ -4,18 +4,17 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/mumax/3/httpfs"
 	"image"
 	"image/png"
 	"io/ioutil"
 	"net/http"
 	"os/exec"
 	"sync/atomic"
-
-	"github.com/mumax/3/httpfs"
 )
 
-var nPlots int32        // counts number of active gnuplot processes
-const MAX_GNUPLOTS = 20 // maximum allowed number of gnuplot processes
+var nPlots int32       // counts number of active gnuplot processes
+const MAX_GNUPLOTS = 5 // maximum allowed number of gnuplot processes
 
 func (g *guistate) servePlot(w http.ResponseWriter, r *http.Request) {
 

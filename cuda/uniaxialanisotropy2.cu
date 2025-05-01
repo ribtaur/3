@@ -23,7 +23,7 @@ adduniaxialanisotropy2(float* __restrict__  Bx, float* __restrict__  By, float* 
         float  K1  = amul(K1_, K1_mul, i) * invMs;
         float  K2  = amul(K2_, K2_mul, i) * invMs;
         float3 m   = {mx[i], my[i], mz[i]};
-        float  mu  = dot(m, u);//*(dot(m, m))*(dot(m, m));//*sqrt(dot(m, m));  // Added sqrt(dot(m, m)) for LLB
+        float  mu  = dot(m, u); //*sqrt(dot(m, m));  // Added sqrt(dot(m, m)) for LLB
         float3 Ba  = 2.0f*K1*    (mu)*u+
                      4.0f*K2*pow3(mu)*u;
 
