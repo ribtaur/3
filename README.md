@@ -7,9 +7,10 @@ GPU accelerated micromagnetic simulator.
 
 Downloads and documentation
 ---------------------------
-
+For original mumax doc:
 http://mumax.github.io
-
+For my implementations (work in progress and in Spanish):
+https://ribtaur.github.io/3/manual.pdf
 
 Paper
 -----
